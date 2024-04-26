@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SmartHome</string>
+    <string name="all_rooms">All rooms</string>
+    <string name="add_room">Add room</string>
+    <string name="room_screen">Room screen</string>
+    <string name="room_card">Room card</string>
+</resources>
