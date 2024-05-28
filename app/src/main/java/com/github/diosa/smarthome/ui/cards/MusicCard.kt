@@ -67,11 +67,10 @@ fun MusicCard() {
                         .size(32.dp)
                 )
                 Text(
-                    text = "Music",
+                    text = "Музыка",
                     modifier = Modifier
                         .weight(4f),
                     style = TextStyle(fontSize = 20.sp),
-                    color = Color.DarkGray
                 )
                 Spacer(
                     modifier = Modifier

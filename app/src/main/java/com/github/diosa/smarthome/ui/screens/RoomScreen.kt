@@ -19,13 +19,15 @@ import com.github.diosa.smarthome.cards.LightingCard
 import com.github.diosa.smarthome.cards.MainCard
 import com.github.diosa.smarthome.viewModels.RoomViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.github.diosa.smarthome.cards.ConditionCard
+import com.github.diosa.smarthome.cards.MusicCard
 import com.github.diosa.smarthome.data.entities.rooms.AbstractRoom
 
 @Composable
 fun RoomScreen(
-    room: AbstractRoom
+    roomId: Int,
+    moveToAllRooms: () -> Unit
 ) {
-    val viewModel: RoomViewModel = viewModel(factory = RoomViewModel.factory)
     Image(
         painter = painterResource(id = R.drawable.living_room),
         contentDescription = "im1",
@@ -41,9 +43,10 @@ fun RoomScreen(
         verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
 
-        MainCard(room)
-        LightingCard(room)
-//        ConditionCard()
-//        MusicCard()
+        MainCard(roomId, moveToAllRooms)
+        LightingCard(roomId)
+        ConditionCard()
+        MusicCard()
         }
 }
+

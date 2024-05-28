@@ -12,11 +12,10 @@ import com.github.diosa.smarthome.data.entities.types.RoomType
 class AbstractRoom(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo(name = "title") var title: String = "",
-    @ColumnInfo(name = "type") var type: RoomType,
-    @ColumnInfo(name = "temperature") var temperature: Float,
-    @ColumnInfo(name = "humidity_percentage") var humidityPercentage: Float,
-    @ColumnInfo(name = "lightning_percentage") var lightningPercentage: Float,
+    @ColumnInfo(name = "type") var type: RoomType = RoomType.LIVING_ROOM,
+    @ColumnInfo(name = "temperature") var temperature: Float = 0f,
+    @ColumnInfo(name = "humidity_percentage") var humidityPercentage: Float = 0f,
+    @ColumnInfo(name = "lightning_percentage") var lightningPercentage: Float = 0f,
 //    val musicStation: MusicStationUiState?,
 //    val airConditionerList: List<AirConditionerUiState>,
-) {
-}
+)

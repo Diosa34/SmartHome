@@ -26,8 +26,9 @@ abstract class MainDB : RoomDatabase() {
             return databaseBuilder(
                 context,
                 MainDB::class.java,
-                "smart_home"
-            ).build()
+                "smart_home")
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
 }

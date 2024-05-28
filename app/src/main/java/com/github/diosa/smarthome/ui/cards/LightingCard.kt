@@ -30,14 +30,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.diosa.smarthome.R
 import com.github.diosa.smarthome.data.entities.rooms.AbstractRoom
 import com.github.diosa.smarthome.ui.theme.Orange
+import com.github.diosa.smarthome.viewModels.RoomViewModel
 
 @Composable
 fun LightingCard(
-    room: AbstractRoom
+    roomId: Int
 ) {
+    val viewModel: RoomViewModel = viewModel(factory = RoomViewModel.factory)
+    viewModel.getById(roomId)
+    val currRoom = viewModel.currRoom.value
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
@@ -92,8 +98,8 @@ fun LightingCard(
             }
 
 
-
-            var sliderValue by remember { mutableFloatStateOf(room.lightningPercentage) }
+            var sliderValue by remember { mutableFloatStateOf(currRoom.lightningPercentage)}
+            println(currRoom.lightningPercentage)
             Text(
                 text = sliderValue.toInt().toString() + " %",
                 style = TextStyle(fontSize = 20.sp),
@@ -104,6 +110,7 @@ fun LightingCard(
                 onValueChange = { sliderValue = it },
                 valueRange = 0f..100f,
                 steps = 100,
+                onValueChangeFinished = {viewModel.updateLightning(sliderValue)},
                 modifier = Modifier
                     .width(250.dp),
                 colors = SliderDefaults.colors(

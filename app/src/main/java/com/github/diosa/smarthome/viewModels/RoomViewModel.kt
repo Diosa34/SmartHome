@@ -1,6 +1,8 @@
 package com.github.diosa.smarthome.viewModels
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -9,22 +11,57 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.github.diosa.smarthome.App
-import com.github.diosa.smarthome.MainDB
 import com.github.diosa.smarthome.data.entities.rooms.AbstractRoom
 import com.github.diosa.smarthome.data.entities.types.RoomType
+import com.github.diosa.smarthome.data.repository.RoomRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RoomViewModel(private val database: MainDB) : ViewModel()  {
+class RoomViewModel(private val repository: RoomRepository) : ViewModel()  {
 
-    var roomName by mutableStateOf("")
+    var roomTitle by mutableStateOf("")
     var roomType: RoomType by mutableStateOf(RoomType.LIVING_ROOM)
+    var roomTemperature by mutableFloatStateOf(0f)
+    var roomHumidityPercentage by mutableFloatStateOf(0f)
+    var roomLightningPercentage by mutableFloatStateOf(0f)
 
-    val roomsList = database.dao.getAll()
+    var roomsList = mutableStateOf<List<AbstractRoom>>(emptyList())
+
+    private val _currRoom = mutableStateOf(AbstractRoom())
+    val currRoom: State<AbstractRoom> = _currRoom
+
+    init {
+        getAll()
+    }
+
+    fun getById(id: Int) {
+        viewModelScope.launch {
+            repository.getById(id).collect { data ->
+                _currRoom.value = data
+            }
+        }
+    }
+
+    private fun getAll() {
+        viewModelScope.launch {
+            repository.getAll().collect { data ->
+                roomsList.value = data
+            }
+        }
+    }
+
+    fun updateLightning(value: Float) = viewModelScope.launch {
+        _currRoom.value.lightningPercentage = value
+        repository.updateAll(
+            _currRoom.value
+        )
+    }
 
     fun insertRoom() = viewModelScope.launch {
-        database.dao.insertAll(
-            AbstractRoom(title = roomName, type = roomType, temperature = 25f, humidityPercentage = 60f,
-                lightningPercentage = 100f)
+        repository.insertAll(
+            AbstractRoom(title = roomTitle, type = roomType, temperature = roomTemperature, humidityPercentage = roomHumidityPercentage,
+                lightningPercentage = roomLightningPercentage)
         )
     }
 
@@ -36,7 +73,9 @@ class RoomViewModel(private val database: MainDB) : ViewModel()  {
                 extras: CreationExtras
             ): T {
                 val database = (checkNotNull(extras[APPLICATION_KEY]) as App).database
-                return RoomViewModel(database) as T
+                val roomDao = database.dao
+                val repository = RoomRepository(roomDao)
+                return RoomViewModel(repository) as T
             }
         }
     }

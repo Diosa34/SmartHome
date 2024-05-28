@@ -67,7 +67,7 @@ fun ConditionCard() {
                         .size(32.dp)
                 )
                 Text(
-                    text = "Air conditioning",
+                    text = "Кондиционирование",
                     modifier = Modifier
                         .weight(4f),
                     style = TextStyle(fontSize = 20.sp),
