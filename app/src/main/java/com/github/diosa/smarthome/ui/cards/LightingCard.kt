@@ -16,8 +16,8 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,14 +27,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.diosa.smarthome.R
-import com.github.diosa.smarthome.data.entities.rooms.AbstractRoom
 import com.github.diosa.smarthome.ui.theme.Orange
 import com.github.diosa.smarthome.viewModels.RoomViewModel
+
 
 @Composable
 fun LightingCard(
@@ -97,9 +96,11 @@ fun LightingCard(
 
             }
 
+            var sliderValue = currRoom.lightningPercentage
 
-            var sliderValue by remember { mutableFloatStateOf(currRoom.lightningPercentage)}
-            println(currRoom.lightningPercentage)
+            LaunchedEffect(currRoom.lightningPercentage) {
+                sliderValue = currRoom.lightningPercentage
+            }
             Text(
                 text = sliderValue.toInt().toString() + " %",
                 style = TextStyle(fontSize = 20.sp),
